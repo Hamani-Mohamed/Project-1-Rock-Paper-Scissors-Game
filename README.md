@@ -10,9 +10,4 @@ This project is part of the Abu-Hadhoud Platform training track with Dr. Muhamme
     Random number generation
     Functions
 
-## 🛠 Built With
-
-    C++
-    <iostream>
-    <cstdlib> (for random number generation)
-    <ctime> (for seeding the random function)
+## 🛠 Built With : C++
