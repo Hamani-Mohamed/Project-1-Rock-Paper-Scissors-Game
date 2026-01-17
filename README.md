@@ -1,4 +1,4 @@
-# 🎮 Stone-Paper-Scissor Game
+# 🎮 Rock, Paper, Scissors Game - My first ever project!
 ## 📖 About the Project
 
 A simple command-line game where the player competes against the computer in the classic "Rock, Paper, Scissors".
