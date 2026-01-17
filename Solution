@@ -1,0 +1,185 @@
+#include <iostream>
+#include <string>
+#include <cstdlib>
+#include <ctime>
+#include <cmath>
+using namespace std;
+
+enum enRoundWinner { Player, Computer, NoWinner };
+enum enChoice { Rock = 1, Paper = 2, Scissors = 3 };
+struct stGameResults
+{
+	short rounds;
+	short PlayerWins;
+	short PcWins;
+	short Draws;
+	string FinalWinner;
+};
+
+short  ReadPositiveNum(string Message)
+{
+	int num;
+	do
+	{
+		cout << Message << "\n";
+		cin >> num;
+	} while (num <= 0 || num > 10);
+	return num;
+}
+
+string Choice(short choice)
+{
+	if (choice == enChoice::Rock)
+		return "Rock\n";
+	else if (choice == enChoice::Paper)
+		return "Paper\n";
+	else if (choice == enChoice::Scissors)
+		return "Scissors\n";
+}
+
+enRoundWinner Winner(short choice, short PcChoice)
+{
+	if (choice == PcChoice)
+		return enRoundWinner::NoWinner;
+
+	switch (choice)
+	{
+	case enChoice::Rock:
+		if (PcChoice == enChoice::Paper)
+			return enRoundWinner::Computer;
+		else if (PcChoice == enChoice::Scissors)
+			return enRoundWinner::Player;
+	case enChoice::Paper:
+		if (PcChoice == enChoice::Scissors)
+			return enRoundWinner::Computer;
+		else if (PcChoice == enChoice::Rock)
+			return enRoundWinner::Player;
+	case enChoice::Scissors:
+		if (PcChoice == enChoice::Rock)
+			return enRoundWinner::Computer;
+		else if (PcChoice == enChoice::Paper)
+			return enRoundWinner::Player;
+	}
+}
+
+void Colour(short winner)
+{
+	if (winner == enRoundWinner::Computer)
+	{
+		system("Color 4F");
+		cout << "\a";
+	}
+	else if (winner == enRoundWinner::Player)
+		system("Color 2F");
+	else if (winner == enRoundWinner::NoWinner)
+		system("Color 60");
+}
+
+string RoundWinner(short winner)
+{
+	if (winner == enRoundWinner::Computer)
+		return "Computer";
+	else if (winner == enRoundWinner::Player)
+		return "Player";
+	else if (winner == enRoundWinner::NoWinner)
+		return "No Winner";
+}
+
+int RandomNum(short from, short to)
+{
+	int num = rand() % (to - from + 1) + from;
+	return num;
+}
+
+void Rounds(short roundLength, stGameResults& results)
+{
+	short choice;
+	results.Draws = 0;
+	results.PlayerWins = 0;
+	results.PcWins = 0;
+	for (short x = 1; x <= roundLength; x++)
+	{
+		cout << "\nRound [" << x << "] begins :\n\n";
+		cout << "Your choice : [1] = Rock / [2] = Paper / [3] = Scissors\n";
+		cin >> choice;
+		cout << "\n____________________Round [" << x << "]____________________\n\n";
+		cout << "Player's choice : " << Choice(choice);
+		cout << "Computer's choice : ";
+		short PcChoice = RandomNum(1, 3);
+		cout << Choice(PcChoice);
+		enRoundWinner winner = Winner(choice, PcChoice);
+		string WinnerName = RoundWinner(winner);
+		Colour(winner);
+		cout << "Round Winner : [" << WinnerName << "]";
+		cout << "\n_________________________________________________\n\n";
+		if (winner == enRoundWinner::Computer)
+		{
+			results.PcWins++;
+		}
+		else if (winner == enRoundWinner::NoWinner)
+		{
+			results.Draws++;
+		}
+		else
+		{
+			results.PlayerWins++;
+		}
+	}
+}
+
+void FinalWinner(stGameResults& results)
+{
+	if (results.PcWins > results.PlayerWins)
+		results.FinalWinner = "Computer!";
+	else if (results.PlayerWins > results.PcWins)
+		results.FinalWinner = "Player!";
+	else
+		results.FinalWinner = "No Winner!";
+}
+
+void GameOver()
+{
+	cout << "\t\t\t\t_______________________________________________________________\n";
+	cout << "\n\t\t\t\t\t\t\t  GAME OVER\n";
+	cout << "\t\t\t\t_______________________________________________________________\n\n";
+}
+
+void GameResults(stGameResults& results)
+{
+	cout << "\t\t\t\t________________________[Game Results]__________________________\n\n";
+	cout << "\t\t\t\tGame rounds : " << results.rounds << "\n";
+	cout << "\t\t\t\tPlayer wins : " << results.PlayerWins << "\n";
+	cout << "\t\t\t\tComputer wins : " << results.PcWins << "\n";
+	cout << "\t\t\t\tDraw times : " << results.Draws << "\n";
+	cout << "\t\t\t\tFinalWinner : " << results.FinalWinner << "\n";
+}
+
+void StartGame()
+{
+	stGameResults results;
+	bool again;
+	do
+	{
+		results.rounds = ReadPositiveNum("Please enter how many rounds you want to play (1 to 10) : ");
+		Rounds(results.rounds, results);
+		GameOver();
+		FinalWinner(results);
+		GameResults(results);
+		cout << "\nWould you like to play again? [1] = Yes / [0] = No" << endl;
+		cin >> again;
+		if (again == false)
+		{
+			system("Color 0F");
+			cout << "\nThanks for playing!\n";
+			break;
+		}
+		system("cls");
+		system("Color 0F");
+	} while (again == true);
+}
+
+int main()
+{
+	srand((unsigned)time(NULL));
+	StartGame();
+}
